@@ -1,9 +1,8 @@
 <?php
 
-namespace Tests\Http\Controllers\Api;
+namespace Tests\Feature\Http\Controllers\Api;
 
 use App\Models\Note;
-use App\Services\FileUploadService;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,7 +33,7 @@ class NotebookControllerTest extends TestCase
         'updated_at',
     ];
 
-    public function testIndex(): void
+    public function test_index(): void
     {
         $this->json(Request::METHOD_GET, self::ROUTE_API_NOTEBOOK)
             ->assertStatus(Response::HTTP_OK)
@@ -47,7 +46,7 @@ class NotebookControllerTest extends TestCase
             );
     }
 
-    public function testShow(): void
+    public function test_show(): void
     {
         $payload = Note::factory()->createOne()->getAttributes();
 
@@ -63,7 +62,7 @@ class NotebookControllerTest extends TestCase
             );
     }
 
-    public function testStore(): void
+    public function test_store(): void
     {
         $note = Note::factory()->createOne()->getAttributes();
         unset($note['id']);
@@ -92,7 +91,7 @@ class NotebookControllerTest extends TestCase
             );
     }
 
-    public function testUpdateAndChangeFile(): void
+    public function test_update_and_change_file(): void
     {
         $note = Note::factory()->createOne()->getAttributes();
         $photo = UploadedFile::fake()->create(
@@ -117,7 +116,7 @@ class NotebookControllerTest extends TestCase
             );
     }
 
-    public function testUpdateAndDeleteFile(): void
+    public function test_update_and_delete_file(): void
     {
         $note = Note::factory()->createOne()->getAttributes();
 
@@ -144,7 +143,7 @@ class NotebookControllerTest extends TestCase
         $this->assertDatabaseHas(self::TABLE, $note);
     }
 
-    public function testDestroy()
+    public function test_destroy(): void
     {
         $payload = Note::factory()->createOne()->getAttributes();
 

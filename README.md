@@ -61,6 +61,16 @@ Swagger для отображения методов api (https://swagger.io/)
 - Docker 24.0.2
 
 #### Для сборки требуется:
+
+- Кластер Redis
+- Расширение PhpRedis
+
+      sudo apt install php-pear
+      sudo apt install php-dev
+      sudo pecl install redis
+      php.ini: extension = redis.io
+      sudo systemctl restart php8.2-fpm.service
+
 - СУБД MySQL,
 - созданная база notebook
 - пользователь: root, пароль: password
