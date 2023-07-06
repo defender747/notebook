@@ -1,0 +1,710 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Laravel OpenApi Demo Documentation",
+        "description": "L5 Swagger OpenApi description",
+        "contact": {
+            "email": "admin@admin.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://dev.notebook.ru/api/v1",
+            "description": "Demo API Server"
+        }
+    ],
+    "paths": {
+        "/notebook": {
+            "get": {
+                "tags": [
+                    "Notebook"
+                ],
+                "summary": "Get list of notes in notebook",
+                "description": "Return list of notes",
+                "operationId": "getNotesList",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "per_page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "2"
+                    },
+                    {
+                        "name": "cursor",
+                        "in": "query",
+                        "description": "cursor",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "eyJpZCI6MywiX3BvaW50c1RvTmV4dEl0ZW1zIjp0cnVlfQ"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoteResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Notebook"
+                ],
+                "summary": "Store new note",
+                "description": "Store and return new note",
+                "operationId": "storeNotebook",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "full_name",
+                                    "phone",
+                                    "email"
+                                ],
+                                "properties": {
+                                    "full_name": {
+                                        "title": "full_name",
+                                        "description": "fio of the new notebook",
+                                        "type": "string",
+                                        "example": "Sheldon Lee Cooper"
+                                    },
+                                    "company": {
+                                        "title": "company",
+                                        "description": "Company name",
+                                        "type": "string",
+                                        "example": "Future"
+                                    },
+                                    "phone": {
+                                        "title": "phone",
+                                        "description": "phone number",
+                                        "type": "string",
+                                        "example": "+39138789252"
+                                    },
+                                    "email": {
+                                        "title": "email",
+                                        "description": "email",
+                                        "type": "string",
+                                        "example": "user@mail.ru"
+                                    },
+                                    "birth_date": {
+                                        "title": "birth_date",
+                                        "description": "date of birth",
+                                        "type": "Date",
+                                        "example": "1995-01-25"
+                                    },
+                                    "photo_url": {
+                                        "title": "photo_url",
+                                        "description": "photo_url",
+                                        "type": "string",
+                                        "example": "http:://notebook.ru/public/storage/qwerty-photo.jpeg"
+                                    },
+                                    "photo_need_delete": {
+                                        "title": "photo_need_delete",
+                                        "description": "is photo need to deleted",
+                                        "type": "boolean",
+                                        "default": "false",
+                                        "example": "false"
+                                    },
+                                    "photo_file": {
+                                        "title": "photo_file",
+                                        "description": "binary photo file, max size 128 KiB",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/NoteStoreRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Note"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/notebook/{id}": {
+            "get": {
+                "tags": [
+                    "Notebook"
+                ],
+                "summary": "Get note information",
+                "description": "Return note",
+                "operationId": "findNotebookById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Notebook id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Note"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Notebook"
+                ],
+                "summary": "Update existing note",
+                "description": "Return updated note data",
+                "operationId": "updateNotebook",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Notebook id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "full_name": {
+                                        "title": "full_name",
+                                        "description": "fio of the new notebook",
+                                        "type": "string",
+                                        "example": "Sheldon Lee Cooper"
+                                    },
+                                    "company": {
+                                        "title": "company",
+                                        "description": "Company name",
+                                        "type": "string",
+                                        "example": "Future"
+                                    },
+                                    "phone": {
+                                        "title": "phone",
+                                        "description": "phone number",
+                                        "type": "string",
+                                        "example": "+39138789252"
+                                    },
+                                    "email": {
+                                        "title": "email",
+                                        "description": "email",
+                                        "type": "string",
+                                        "example": "user@mail.ru"
+                                    },
+                                    "birth_date": {
+                                        "title": "birth_date",
+                                        "description": "date of birth",
+                                        "type": "Date",
+                                        "example": "1995-01-25"
+                                    },
+                                    "photo_url": {
+                                        "title": "photo_url",
+                                        "description": "photo_url",
+                                        "type": "string",
+                                        "example": "http:://notebook.ru/public/storage/qwerty-photo.jpeg"
+                                    },
+                                    "photo_need_delete": {
+                                        "title": "photo_need_delete",
+                                        "description": "is photo need to deleted",
+                                        "type": "boolean",
+                                        "default": false,
+                                        "example": "false"
+                                    },
+                                    "photo_file": {
+                                        "title": "photo_file",
+                                        "description": "binary photo file, max size 128 KiB",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/NoteUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Note"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Notebook"
+                ],
+                "summary": "Delete existing note",
+                "description": "Delete a record and return no content",
+                "operationId": "deleteNotebook",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Notebook id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "NoteListGetRequest": {
+                "title": "Get all notes request with paginate",
+                "description": "Get all notes request with paginate",
+                "properties": {
+                    "per_page": {
+                        "title": "per_page",
+                        "description": "count notes show per page",
+                        "type": "integer",
+                        "example": "5"
+                    },
+                    "cursor": {
+                        "title": "cursor",
+                        "description": "cursor",
+                        "type": "string",
+                        "example": "eyJpZCI6MywiX3BvaW50c1RvTmV4dEl0ZW1zIjp0cnVlfQ"
+                    }
+                },
+                "type": "object"
+            },
+            "NoteStoreRequest": {
+                "title": "Store notebook request",
+                "description": "Store notebook request body data",
+                "required": [
+                    "full_name",
+                    "phone",
+                    "email"
+                ],
+                "properties": {
+                    "full_name": {
+                        "title": "full_name",
+                        "description": "fio of the new notebook",
+                        "type": "string",
+                        "example": "Sheldon Lee Cooper"
+                    },
+                    "company": {
+                        "title": "company",
+                        "description": "Company name",
+                        "type": "string",
+                        "example": "Future"
+                    },
+                    "phone": {
+                        "title": "phone",
+                        "description": "phone number",
+                        "type": "string",
+                        "example": "+39138789252"
+                    },
+                    "email": {
+                        "title": "email",
+                        "description": "email",
+                        "type": "string",
+                        "example": "user@mail.ru"
+                    },
+                    "birth_date": {
+                        "title": "birth_date",
+                        "description": "date of birth",
+                        "type": "Date",
+                        "example": "1995-01-25"
+                    },
+                    "photo_url": {
+                        "title": "photo_url",
+                        "description": "photo_url",
+                        "type": "string",
+                        "example": "http:://notebook.ru/public/storage/qwerty-photo.jpeg"
+                    },
+                    "photo_need_delete": {
+                        "title": "photo_need_delete",
+                        "description": "is photo need to deleted",
+                        "type": "boolean",
+                        "example": "false"
+                    },
+                    "photo_file": {
+                        "title": "photo_file",
+                        "description": "binary photo file, max size 128 KiB",
+                        "type": "string",
+                        "format": "binary"
+                    }
+                },
+                "type": "object"
+            },
+            "NoteUpdateRequest": {
+                "title": "Update notebook request",
+                "description": "Update notebook request body data",
+                "properties": {
+                    "full_name": {
+                        "title": "full_name",
+                        "description": "fio of the new notebook",
+                        "type": "string",
+                        "example": "Sheldon Lee Cooper"
+                    },
+                    "company": {
+                        "title": "company",
+                        "description": "Company name",
+                        "type": "string",
+                        "example": "Future"
+                    },
+                    "phone": {
+                        "title": "phone",
+                        "description": "phone number",
+                        "type": "string",
+                        "example": "+39138789252"
+                    },
+                    "email": {
+                        "title": "email",
+                        "description": "email",
+                        "type": "string",
+                        "example": "user@mail.ru"
+                    },
+                    "birth_date": {
+                        "title": "birth_date",
+                        "description": "date of birth",
+                        "type": "Date",
+                        "example": "1995-01-25"
+                    },
+                    "photo_url": {
+                        "title": "photo_url",
+                        "description": "photo_url",
+                        "type": "string",
+                        "example": "http:://notebook.ru/public/storage/qwerty-photo.jpeg"
+                    },
+                    "photo_need_delete": {
+                        "title": "photo_need_delete",
+                        "description": "is photo need to deleted",
+                        "type": "boolean",
+                        "example": "false"
+                    },
+                    "photo_file": {
+                        "title": "photo_file",
+                        "description": "binary photo file, max size 128 KiB",
+                        "type": "string",
+                        "format": "binary"
+                    }
+                },
+                "type": "object"
+            },
+            "NoteCollection": {
+                "title": "Get notebook collection",
+                "description": "Get notebook collection body data toArray",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "full_name": {
+                        "title": "full_name",
+                        "description": "fio of the new notebook",
+                        "type": "string",
+                        "example": "Sheldon Lee Cooper"
+                    },
+                    "company": {
+                        "title": "company",
+                        "description": "Company name",
+                        "type": "string",
+                        "example": "Future"
+                    },
+                    "phone": {
+                        "title": "phone",
+                        "description": "phone number",
+                        "type": "string",
+                        "example": "+39138789252"
+                    },
+                    "email": {
+                        "title": "email",
+                        "description": "email",
+                        "type": "string",
+                        "example": "user@mail.ru"
+                    },
+                    "birth_date": {
+                        "title": "birth_date",
+                        "description": "date of birth",
+                        "type": "Date",
+                        "example": "1995-01-25"
+                    },
+                    "photo_url": {
+                        "title": "photo_url",
+                        "description": "photo_url",
+                        "type": "string",
+                        "example": "http:://notebook.ru/public/storage/qwerty-photo.jpeg"
+                    },
+                    "photo_need_delete": {
+                        "title": "photo_need_delete",
+                        "description": "is photo need to deleted",
+                        "type": "boolean",
+                        "example": "false"
+                    },
+                    "created_at": {
+                        "title": "created_at",
+                        "description": "created_at",
+                        "type": "Carbon",
+                        "example": "2023-07-04 17:50:51"
+                    },
+                    "updated_at": {
+                        "title": "updated_at",
+                        "description": "updated_at",
+                        "type": "Carbon",
+                        "example": "2023-07-04 17:50:51"
+                    }
+                },
+                "type": "object"
+            },
+            "NoteResource": {
+                "title": "Get one notebook Resource",
+                "description": "Get one notebook Resource body data toArray",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "full_name": {
+                        "title": "full_name",
+                        "description": "fio of the new notebook",
+                        "type": "string",
+                        "example": "Sheldon Lee Cooper"
+                    },
+                    "company": {
+                        "title": "company",
+                        "description": "Company name",
+                        "type": "string",
+                        "example": "Future"
+                    },
+                    "phone": {
+                        "title": "phone",
+                        "description": "phone number",
+                        "type": "string",
+                        "example": "+39138789252"
+                    },
+                    "email": {
+                        "title": "email",
+                        "description": "email",
+                        "type": "string",
+                        "example": "user@mail.ru"
+                    },
+                    "birth_date": {
+                        "title": "birth_date",
+                        "description": "date of birth",
+                        "type": "Date",
+                        "example": "1995-01-25"
+                    },
+                    "photo_url": {
+                        "title": "photo_url",
+                        "description": "photo_url",
+                        "type": "string",
+                        "example": "http:://notebook.ru/public/storage/qwerty-photo.jpeg"
+                    },
+                    "photo_need_delete": {
+                        "title": "photo_need_delete",
+                        "description": "is photo need to deleted",
+                        "type": "boolean",
+                        "example": "false"
+                    },
+                    "created_at": {
+                        "title": "created_at",
+                        "description": "created_at",
+                        "type": "Carbon",
+                        "example": "2023-07-04 17:50:51"
+                    },
+                    "updated_at": {
+                        "title": "updated_at",
+                        "description": "updated_at",
+                        "type": "Carbon",
+                        "example": "2023-07-04 17:50:51"
+                    }
+                },
+                "type": "object"
+            },
+            "Note": {
+                "title": "Notebook",
+                "description": "Notebook model",
+                "required": [
+                    "full_name",
+                    "phone",
+                    "email"
+                ],
+                "properties": {
+                    "id": {
+                        "title": "id",
+                        "description": "id",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "full_name": {
+                        "title": "full_name",
+                        "description": "fio of the new notebook",
+                        "type": "string",
+                        "example": "Sheldon Lee Cooper"
+                    },
+                    "company": {
+                        "title": "company",
+                        "description": "Company name",
+                        "type": "string",
+                        "example": "Future"
+                    },
+                    "phone": {
+                        "title": "phone",
+                        "description": "phone number",
+                        "type": "string",
+                        "example": "+39138789252"
+                    },
+                    "email": {
+                        "title": "email",
+                        "description": "email",
+                        "type": "string",
+                        "example": "user@mail.ru"
+                    },
+                    "birth_date": {
+                        "title": "birth_date",
+                        "description": "date of birth",
+                        "type": "Date",
+                        "example": "1995-01-25"
+                    },
+                    "photo_uuid": {
+                        "title": "photo_uuid",
+                        "description": "photo_uuid",
+                        "type": "string",
+                        "example": "g76iu6yhi7"
+                    },
+                    "photo_name": {
+                        "title": "photo_name",
+                        "description": "photo_name",
+                        "type": "string",
+                        "example": "storage/photo.jpg"
+                    },
+                    "created_at": {
+                        "title": "created_at",
+                        "description": "created_at",
+                        "type": "Carbon",
+                        "example": "2023-07-04 17:50:51"
+                    },
+                    "updated_at": {
+                        "title": "updated_at",
+                        "description": "updated_at",
+                        "type": "Carbon",
+                        "example": "2023-07-04 17:50:51"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Notebook"
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Notebook",
+            "description": "API Endpoints of Notebook"
+        }
+    ]
+}
