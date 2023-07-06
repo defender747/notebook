@@ -17,10 +17,15 @@ class NotebookService
 {
     private const PER_PAGE = 5;
     private FileUploadService $fileUploadService;
+    private NoteCacheService $cacheService;
 
-    public function __construct(FileUploadService $fileUploadService)
+    public function __construct(
+        FileUploadService $fileUploadService,
+        NoteCacheService  $cacheService
+    )
     {
         $this->fileUploadService = $fileUploadService;
+        $this->cacheService = $cacheService;
     }
 
     /**
@@ -76,7 +81,10 @@ class NotebookService
         $params['photo_uuid'] = $file ? $fileUuid : null;
         $params['photo_name'] = $file ? $fileName : null;
 
-        return Note::query()->create($params);
+        return $this->cacheService->rememberToCache(
+            $this->cacheService->getKey($params['phone'], $params['email']),
+            Note::query()->create($params)
+        );
     }
 
     /**
@@ -117,6 +125,12 @@ class NotebookService
         }
 
         $currentNote->save();
+
+        $this->cacheService->setToCache(
+            $this->cacheService->getKey($currentNote->phone, $currentNote->email),
+            $currentNote
+        );
+
         return $currentNote;
     }
 
@@ -128,7 +142,12 @@ class NotebookService
     {
         $currentNote = $this->findNoteById($id);
         $this->deletePhotoByNote($currentNote);
+
         $currentNote->delete();
+
+        $this->cacheService->deleteFromCache(
+            $this->cacheService->getKey($currentNote->phone, $currentNote->email)
+        );
     }
 
     /**
