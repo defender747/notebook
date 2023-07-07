@@ -89,7 +89,7 @@
 							"type": "text"
 						},
 						{
-							"key": "photo_need_delete",
+							"key": "photo_must_deleted",
 							"value": "0",
 							"type": "text"
 						},
@@ -200,7 +200,7 @@
 							"type": "text"
 						},
 						{
-							"key": "photo_need_delete",
+							"key": "photo_must_deleted",
 							"value": "0",
 							"type": "text"
 						},

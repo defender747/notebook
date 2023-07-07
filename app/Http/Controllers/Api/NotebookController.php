@@ -119,12 +119,12 @@ class NotebookController extends ApiController
      *     type="string"
      * ),
      * @OA\Property(
-     *     title="photo_need_delete",
-     *     property="photo_need_delete",
-     *     description="is photo need to deleted",
-     *     default="false",
-     *     example="false",
-     *     type="boolean"
+     *     title="photo_must_deleted",
+     *     property="photo_must_deleted",
+     *     description="should the photo be deleted (for true/false can use 0/1)",
+     *     default="0",
+     *     example="0",
+     *     type="string"
      * ),
      * @OA\Property(
      *     title="photo_file",
@@ -252,12 +252,12 @@ class NotebookController extends ApiController
      *     type="string"
      * ),
      * @OA\Property(
-     *     title="photo_need_delete",
-     *     property="photo_need_delete",
-     *     description="is photo need to deleted",
-     *     default=false,
-     *     example="false",
-     *     type="boolean"
+     *     title="photo_must_deleted",
+     *     property="photo_must_deleted",
+     *     description="should the photo be deleted (for true/false can use 0/1)",
+     *     default=0,
+     *     example="0",
+     *     type="string"
      * ),
      * @OA\Property(
      *     title="photo_file",

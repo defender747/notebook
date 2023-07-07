@@ -121,12 +121,12 @@
                                         "type": "string",
                                         "example": "http:://notebook.ru/public/storage/qwerty-photo.jpeg"
                                     },
-                                    "photo_need_delete": {
-                                        "title": "photo_need_delete",
-                                        "description": "is photo need to deleted",
-                                        "type": "boolean",
-                                        "default": "false",
-                                        "example": "false"
+                                    "photo_must_deleted": {
+                                        "title": "photo_must_deleted",
+                                        "description": "should the photo be deleted (for true/false can use 0/1)",
+                                        "type": "string",
+                                        "default": "0",
+                                        "example": "0"
                                     },
                                     "photo_file": {
                                         "title": "photo_file",
@@ -271,12 +271,12 @@
                                         "type": "string",
                                         "example": "http:://notebook.ru/public/storage/qwerty-photo.jpeg"
                                     },
-                                    "photo_need_delete": {
-                                        "title": "photo_need_delete",
-                                        "description": "is photo need to deleted",
-                                        "type": "boolean",
-                                        "default": false,
-                                        "example": "false"
+                                    "photo_must_deleted": {
+                                        "title": "photo_must_deleted",
+                                        "description": "should the photo be deleted (for true/false can use 0/1)",
+                                        "type": "string",
+                                        "default": 0,
+                                        "example": "0"
                                     },
                                     "photo_file": {
                                         "title": "photo_file",
@@ -426,9 +426,9 @@
                         "type": "string",
                         "example": "http:://notebook.ru/public/storage/qwerty-photo.jpeg"
                     },
-                    "photo_need_delete": {
-                        "title": "photo_need_delete",
-                        "description": "is photo need to deleted",
+                    "photo_must_deleted": {
+                        "title": "photo_must_deleted",
+                        "description": "should the photo be deleted",
                         "type": "boolean",
                         "example": "false"
                     },
@@ -481,9 +481,9 @@
                         "type": "string",
                         "example": "http:://notebook.ru/public/storage/qwerty-photo.jpeg"
                     },
-                    "photo_need_delete": {
-                        "title": "photo_need_delete",
-                        "description": "is photo need to deleted",
+                    "photo_must_deleted": {
+                        "title": "photo_must_deleted",
+                        "description": "should the photo be deleted",
                         "type": "boolean",
                         "example": "false"
                     },
@@ -539,9 +539,9 @@
                         "type": "string",
                         "example": "http:://notebook.ru/public/storage/qwerty-photo.jpeg"
                     },
-                    "photo_need_delete": {
-                        "title": "photo_need_delete",
-                        "description": "is photo need to deleted",
+                    "photo_must_deleted": {
+                        "title": "photo_must_deleted",
+                        "description": "should the photo be deleted",
                         "type": "boolean",
                         "example": "false"
                     },
@@ -603,9 +603,9 @@
                         "type": "string",
                         "example": "http:://notebook.ru/public/storage/qwerty-photo.jpeg"
                     },
-                    "photo_need_delete": {
-                        "title": "photo_need_delete",
-                        "description": "is photo need to deleted",
+                    "photo_must_deleted": {
+                        "title": "photo_must_deleted",
+                        "description": "should the photo be deleted",
                         "type": "boolean",
                         "example": "false"
                     },
@@ -673,7 +673,7 @@
                         "title": "photo_uuid",
                         "description": "photo_uuid",
                         "type": "string",
-                        "example": "g76iu6yhi7"
+                        "example": "d4d80caa-381c-4743-b320-4d55ef8c57b3"
                     },
                     "photo_name": {
                         "title": "photo_name",

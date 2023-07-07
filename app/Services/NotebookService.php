@@ -53,8 +53,10 @@ class NotebookService
      */
     public function findNoteById(int $id): mixed
     {
-        return Note::query()->findOr($id, static function () {
-            throw new NotFoundNoteException();
+        return $this->cacheService->getFromCache($id, static function () use ($id) {
+            return Note::query()->findOr($id, static function () {
+                throw new NotFoundNoteException();
+            });
         });
     }
 
@@ -82,7 +84,7 @@ class NotebookService
         $params['photo_name'] = $file ? $fileName : null;
 
         return $this->cacheService->rememberToCache(
-            $this->cacheService->getKey($params['phone'], $params['email']),
+            $this->cacheService->getKeyByArray($params),
             Note::query()->create($params)
         );
     }
@@ -90,7 +92,7 @@ class NotebookService
     /**
      * из NoteStoreRequest придет info photo
      * photo_url
-     * photo_need_delete
+     * photo_must_deleted
      * photo_file
      *
      * @param NoteUpdateRequest $request
@@ -105,7 +107,7 @@ class NotebookService
         $currentNote = $this->findNoteById($id);
         $currentNote->fill($request->all());
 
-        if ($file || $request->get('photo_need_delete')) {
+        if ($file || $request->get('photo_must_deleted')) {
 
             $this->deletePhotoByNote($currentNote);
 
@@ -127,7 +129,7 @@ class NotebookService
         $currentNote->save();
 
         $this->cacheService->setToCache(
-            $this->cacheService->getKey($currentNote->phone, $currentNote->email),
+            $this->cacheService->getKeyByModel($currentNote),
             $currentNote
         );
 
@@ -143,11 +145,11 @@ class NotebookService
         $currentNote = $this->findNoteById($id);
         $this->deletePhotoByNote($currentNote);
 
-        $currentNote->delete();
-
         $this->cacheService->deleteFromCache(
-            $this->cacheService->getKey($currentNote->phone, $currentNote->email)
+            $this->cacheService->getKeyByModel($currentNote),
         );
+
+        $currentNote->delete();
     }
 
     /**

@@ -54,9 +54,9 @@ use Illuminate\Foundation\Http\FormRequest;
  *     type="string"
  * ),
  * @OA\Property(
- *     title="photo_need_delete",
- *     property="photo_need_delete",
- *     description="is photo need to deleted",
+ *     title="photo_must_deleted",
+ *     property="photo_must_deleted",
+ *     description="should the photo be deleted",
  *     example="false",
  *     type="boolean"
  * ),
@@ -96,7 +96,7 @@ class NoteStoreRequest extends FormRequest
             'birth_date' => ['date'],
 
             'photo_url' => ['string', 'max:255'],
-            'photo_need_delete' => ['boolean'],
+            'photo_must_deleted' => ['boolean'],
             'photo_file' => ['file', 'nullable', 'mimes:jpeg,webp,webm,bmp,svg,jpg,png', 'max:128'],
         ];
     }

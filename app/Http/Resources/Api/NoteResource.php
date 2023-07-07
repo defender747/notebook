@@ -56,9 +56,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *     type="string"
  * ),
  * @OA\Property(
- *     title="photo_need_delete",
- *     property="photo_need_delete",
- *     description="is photo need to deleted",
+ *     title="photo_must_deleted",
+ *     property="photo_must_deleted",
+ *     description="should the photo be deleted",
  *     example="false",
  *     type="boolean"
  * ),
@@ -84,7 +84,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property string $email
  * @property Carbon|null $birth_date
  * @property string $photo_url
- * @property bool $photo_need_delete
+ * @property bool $photo_must_deleted
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -107,7 +107,7 @@ class NoteResource extends JsonResource
             'birth_date' => $this->birth_date,
 
             'photo_url' => $this->photo_url,
-            'photo_need_delete' => $this->photo_need_delete ?? false,
+            'photo_must_deleted' => $this->photo_must_deleted ?? false,
 
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

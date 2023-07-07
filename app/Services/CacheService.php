@@ -4,26 +4,13 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Cache;
 
-class CacheService
+abstract class CacheService
 {
     public const DEFAULT_TTL = 10800; // 3h
-    public const TTL_DAY = 86400;
-    private string $key;
+    public const KEY_SEPARATOR = ':';
 
-    public function getKey(string $phone, string $email): string
+    public function rememberToCache(string $key, mixed $value, $ttl = self::DEFAULT_TTL): mixed
     {
-        return $this->key;
-    }
-
-    public function setKey(string $key): void
-    {
-        $this->key = $key;
-    }
-
-    public function rememberToCache($key, $value, $ttl = self::DEFAULT_TTL)
-    {
-        $key = $this->clearAndGetKey($key);
-
         return Cache::remember(
             $key,
             $ttl,
@@ -32,10 +19,8 @@ class CacheService
             });
     }
 
-    public function setToCache($key, $value, $ttl = self::DEFAULT_TTL)
+    public function setToCache(string $key, $value, $ttl = self::DEFAULT_TTL): void
     {
-        $key = $this->clearAndGetKey($key);
-
         Cache::set(
             $key,
             $value,
@@ -43,32 +28,34 @@ class CacheService
         );
     }
 
-    private function clearAndGetKey($key): string
-    {
-        return str_replace(
-            ['__', '___', '____', '_____', '______', '_______', '________', '---'],
-            [':', '{', '}', '(', ')', '/', '\\', '@'],
-            $key
-        );
-    }
-
-    public function warmUp()
-    {
-        //TODO
-    }
-
-    public function getFromCache($key, $default)
+    public function getFromCache(string $key, mixed $default = null): mixed
     {
         return Cache::get($key, $default);
-    }
-
-    public function hasInCache($key)
-    {
-        //TODO
     }
 
     public function deleteFromCache($key): void
     {
         Cache::forget($key);
     }
+
+    public function implodeArrayKey(array $key): string
+    {
+        return implode(self::KEY_SEPARATOR, $key);
+    }
+
+    public function clearAndGetKey($key): array
+    {
+        return array_filter($key, static function ($k) {
+            return str_replace(
+                ['.', '{', '}', '(', ')', '/', '\\'],
+                [ '---', '__', '___', '____', '_____', '______', '_______'],
+                $k
+            );
+        });
+    }
+
+    abstract protected function getKey(array $key): string;
+    abstract protected function warmUp(): void;
+    abstract protected  function getAllCacheData(): mixed;
+    abstract protected function cacheClear(): void;
 }

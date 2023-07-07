@@ -27,7 +27,7 @@ class NotebookControllerTest extends TestCase
         'birth_date',
 
         'photo_url',
-        'photo_need_delete',
+        'photo_must_deleted',
 
         'created_at',
         'updated_at',
@@ -122,7 +122,7 @@ class NotebookControllerTest extends TestCase
 
         $payload = array_merge(
             $note,
-            ['photo_need_delete' => true],
+            ['photo_must_deleted' => true],
             ['photo_file' => null]
         );
 
