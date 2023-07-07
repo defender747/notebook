@@ -53,11 +53,17 @@ class NotebookService
      */
     public function findNoteById(int $id): mixed
     {
-        return $this->cacheService->getFromCache($id, static function () use ($id) {
-            return Note::query()->findOr($id, static function () {
-                throw new NotFoundNoteException();
-            });
+        if ($fromCache = $this->cacheService->getFromCache($id)) {
+            return $fromCache;
+        }
+
+        $fromDb = Note::query()->findOr($id, function () use ($id) {
+            $this->cacheService->forgetById($id);
+            throw new NotFoundNoteException();
         });
+
+        $this->cacheService->setToCache($fromDb);
+        return $fromDb;
     }
 
     /**
@@ -83,10 +89,11 @@ class NotebookService
         $params['photo_uuid'] = $file ? $fileUuid : null;
         $params['photo_name'] = $file ? $fileName : null;
 
-        return $this->cacheService->rememberToCache(
-            $this->cacheService->getKeyByArray($params),
-            Note::query()->create($params)
-        );
+        /** @var Note $note */
+        $note = Note::query()->create($params);
+
+        $this->cacheService->setToCache($note);
+        return $note;
     }
 
     /**
@@ -128,12 +135,7 @@ class NotebookService
 
         $currentNote->save();
 
-        $this->cacheService->setToCache(
-            $this->cacheService->getKeyByModel($currentNote),
-            $currentNote
-        );
-
-        return $currentNote;
+        return $this->cacheService->rememberToCache($currentNote);
     }
 
     /**
@@ -145,10 +147,7 @@ class NotebookService
         $currentNote = $this->findNoteById($id);
         $this->deletePhotoByNote($currentNote);
 
-        $this->cacheService->deleteFromCache(
-            $this->cacheService->getKeyByModel($currentNote),
-        );
-
+        $this->cacheService->forgetFromCache($currentNote);
         $currentNote->delete();
     }
 
