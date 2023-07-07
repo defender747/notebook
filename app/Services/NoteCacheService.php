@@ -3,19 +3,15 @@
 namespace App\Services;
 
 use App\Models\Note;
+use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
-class NoteCacheService extends CacheService
+class NoteCacheService implements CacheService
 {
-    /** @var string */
     public const KEY_NOTE = 'note';
 
     /**
-     * При добавлении в ключ условий по полям
-     * может потребоваться принудительный сброс всего кэша
-     * если запись будет удалена из базы без удаления из кэш
-     *
      * @param Model $model
      * @return string
      */
@@ -42,17 +38,11 @@ class NoteCacheService extends CacheService
         );
     }
 
-    /**
-     * @return mixed
-     */
     public function getAllCacheData(): mixed
     {
         return Cache::get(self::KEY_NOTE);
     }
 
-    /**
-     * @return mixed
-     */
     public function cacheAllDataByRequiredFields(): mixed
     {
         Note::query()
@@ -65,20 +55,90 @@ class NoteCacheService extends CacheService
     }
 
     /**
-     * todo: to CLI command
+     * @param string $key
+     * @param mixed|null $default
+     * @return mixed
+     */
+    public function getFromCache(string $key, mixed $default = null): mixed
+    {
+        return Cache::get($key, $default);
+    }
+
+    /**
+     * @param Model $model
+     * @return mixed
+     */
+    public function rememberToCache(Model $model): mixed
+    {
+        $key = $this->getKey($model);
+        $this->forget($key);
+
+        return Cache::tags(self::KEY_NOTE)
+            ->remember(
+                $key,
+                self::getTTL(),
+                static function () use ($model) {
+                    return $model;
+                });
+    }
+
+    /**
+     * @param Model $model
+     * @return bool
+     */
+    public function setToCache(Model $model): bool
+    {
+        return Cache::tags(self::KEY_NOTE)
+            ->put(
+                $this->getKey($model),
+                $model,
+                self::getTTL(),
+            );
+    }
+
+    /**
+     * @param Model $model
      * @return void
      */
+    public function forgetFromCache(Model $model): void
+    {
+        $this->forget($this->getKey($model));
+    }
+
+    /**
+     * @param int $id
+     * @return void
+     */
+    public function forgetById(int $id): void
+    {
+        $this->forget($this->getKeyById($id));
+    }
+
+    /**
+     * @param $key
+     * @return void
+     */
+    public function forget($key): void
+    {
+        Cache::tags(self::KEY_NOTE)->forget($key);
+    }
+
+    /**
+     * @param int|null $hours
+     * @return CarbonInterval
+     */
+    public static function getTTL(?int $hours = 3): CarbonInterval
+    {
+        return CarbonInterval::hours($hours);
+    }
+
     public function warmUp(): void
     {
         $this->cacheAllDataByRequiredFields();
     }
 
-    /**
-     * todo: to CLI command
-     * @return void
-     */
-    public function cacheClear(): void
+    public function clear(): void
     {
-        $this->forget(self::KEY_NOTE);
+        Cache::tags(self::KEY_NOTE)->flush();
     }
 }
